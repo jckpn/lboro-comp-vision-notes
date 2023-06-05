@@ -17,7 +17,7 @@ Computer vision has a wide range of applications, like:
 - Object detection
 - Face detection
 - Facial expression recognition
-- Activity recognition from video (e.g. walking, playing football, …)
+- Activity recognition from video (e.g. sports, gestures)
 - Medical imaging
 - Aerial image analysis
 
@@ -594,10 +594,13 @@ $$
     - Central $\to$ immune to translation
     - Normalised $\to$ immune to scale
 
-### Combining Multiple Image Features
+### Feature Vectors -- Combining Image Features
 
-- Using just one feature for indexing is not usually sufficient
-- We can instead make a feature vector using a combination of feature scores with different weights, e.g. colour/LBP/edge, etc.
+- Using just one feature of the image for indexing can be unreliable and won't always return the best results
+- We can instead make a **feature vector** using a combination of index scores from different features
+- The features can be assigned different weights to prioritise certain features over others
+- These feature vectors often have 10s or 100s of dimensions
+- The distance between two feature vectors is called the **pair-wise distance** and is usually calculated using Euclidean distance (pythagoras)
 
 $$
 \begin{matrix}
@@ -609,89 +612,68 @@ $$
 
 ## Key Frame Extraction for Video Retrieval
 
-- Indexing every frame in video is not feasible as …
-
-- Neither is taking every $n^{th}$ frame as likely to miss key parts of video
-
-- Solution: Key frame extraction
-
-    
-
-### Steps for Key Frame Extraction
-
-1. Detect the scene changes in the video, e.g. using colour histogram differences
-2. Select the **key frames** from the video – could be one or any mix of:
-   - the first frame of the scene,
-   - the ‘middle’ frame of the scene,
-   - the $n^{th}$ frame of the scene (use the same $n$ for all scenes)
-3. Can now use these frames with our standard image retrieval methods
+- Indexing *every* frame in a video would be too slow
+- Could try taking every $n^{th}$ frame, but this could miss important frames
+- Solution: Key frame extraction:
+  1. Detect scene changes using colour histogram differences
+  2. Select the **key frames** from the video – could be one or any mix of:
+    - the first frame of the scene,
+    - the ‘middle’ frame of the scene,
+    - the $n^{th}$ frame of the scene (use the same $n$ for all scenes)
+  3. Can now use these frames for indexing
 
 ## The Semantic Gap
 
 - Computer vision algorithms don’t always 'see' what's in the image the same way humans do
 - Our high-level understanding of images (feeling, aesthetic, etc.) cannot be modelled with low-level analysis tools like colour histograms
-- This is known as the **semantic gap**
+- This is known as the **semantic gap** and is a major problem in image retrieval
 
 ### Using Relevance Feedback
 
 One way to mitigate this gap is with **relevance feedback**:
 
-- User is presented with initial retrieval result
-- User repeatedly specifies if image is relevant or not, and model adjusts its weights according
-- Repeat until model is accurate enough
-- (Similar to neural network training)
+- User is presented with initial retrieval results
+- User specifies if each image is relevant or not, and the model adjusts its weights according
+- Repeat this until the model is accurate enough
+- (this is essentially a form of machine learning)
 
 ## Region-Based Image Classification
 
-- It’s sometimes useful to classify images by their general contents – e.g. indoors, outdoors, 3D render, nature, photograph, sports, etc.
-- This requires a **region-based** approach
-- Then we can associate each region of the image with words
-- One way to do this is with statistical modelling, i.e. get a probability model for each region of the image
+- It’s sometimes useful to classify images by their general contents – e.g. 'outdoors', '3D render', 'sports', etc.
+- This requires a **region-based** approach, so we can associate each region of the image with a label
+- One way to do this is with **statistical modelling** -- i.e. get a probability model for each region of the image
 
 ## Region Trees (R-Trees)
 
-- When comparing images, the image features are stored in a *feature vector* – this vector could have 10s or 100s of dimensions, one for each feature’s score
+- Recall that we now use *feature vectors* (a combination of different features) to index images
 - The closest matches to query can then be found using a chosen distance function
 - Searching all images to find the closest ones would take too long, so we use **R-trees** to save time
+- R-trees organise the feature vectors in a tree structure, so we can search only the relevant parts of the vectors
 
-### Steps for R-Trees
+### Steps for Building R-Trees
 
-==TODO==
+1. Divide the feature vectors into groups (e.g. 10 groups)
+2. Decide $M$ = max. num of child nodes, $m$ = min. number of child nodes
+3. Iteratively add the feature vectors to the tree: if $M$ vectors already in the node, split node in two with size $m$
+4. Now have a tree where each leaf node contains $m$ vectors
 
-1. Organise the data in a tree structure
-2. Each leaf node of the tree pertains to an image
+### Searching R-Trees
 
-- Organise data in tree fashion so search only performed on relevant part of database
-- Data items stored in leaf nodes of tree
-- Search space divided (e.g. into  __n-__ dimensional hypercubes)
-- Intermediate nodes store the bounding boxes and pointers to child nodes
-    - Too many child nodes in bounding box $\to$ split box in two
-- $M$ = max. num of child nodes, $m$ = min. number of child nodes
-- Adding leaf node:
-    - Find region for leaf node
-    - If $M$ leaf nodes already in region, split region in two with size $m$
-    - Check whether split affects any of the nodes further up the tree
-        - Create/split regions as necessary
-- R-tree examples in slides
+- Think of the database like a library, and the library is the R-tree
+- If you know the type of book you're looking for, you would go to the appropriate section to save time
+- In the context of finding similar images, an R-tree organises images based on their features
+- If you give it an image, it examines the features of the image, such as colour, texture, shape, etc.
+- It then goes to the part of the R-tree where similar features are stored, kind of like going to the appropriate section in the library
 
-# Database Visualisation
+# Database Visualisation & Navigation
 
-## Database Navigation and Browsing
-
-### Why Visualise Image Databases?
+## Why Visualise Image Databases?
 
 - Good way of managing large image collections
 - Gives user a visual overview of the database and its contents
 - Can interact with the database to browse through images
 - Doesn’t require example images or queries
 - Gets around semantic gap issues by passing the processing back to the human – the user searches for what they want, rather than getting the computer to do it for them
-
-### Visualisation vs. Navigation
-
-Database image browsers have 2 main tasks:
-
-1. **Visualisation**: Arrange images in a way that makes sense and is easy to browse – but this is not useful by itself
-2. **Navigation**: Allow the user to interact and browse the database, using the chosen visualisation method – this must be **interactive** and **intuitive** for the user
 
 ### Problems With Regular Image Browsers
 
@@ -713,6 +695,13 @@ Database image browsers have 2 main tasks:
   - If done automatically, risk system not annotating images properly
 
 The solution to these issues is to use **database navigation** instead of CBIR.
+
+## Visualisation vs. Navigation
+
+Database image browsers have 2 main tasks:
+
+1. **Visualisation**: Arrange images in a way that makes sense and is easy to browse – but this is not useful by itself
+2. **Navigation**: Allow the user to interact and browse the database, using the chosen visualisation method – this must be **interactive** and **intuitive** for the user
 
 ## Method 1: Mapping-Based Visualisation
 
@@ -742,7 +731,8 @@ The solution to these issues is to use **database navigation** instead of CBIR.
 One way to reduce the components of a vector is through principal component analysis:
 
 - PCA reduces the dimensions of a vector by identifying the **‘principal components’ (PCs)**, i.e. the most ‘important’ axes of the feature vectors
-- It takes the vectors with the most variance and weighs these higher, as they …
+- The PCs are chosen as the axes with the most variance, i.e. the axes that best distinguish the feature vectors
+- It takes the vectors with the most variance and weighs these higher since they are more important for distinguishing images
 
 <img src="./Computer Vision.assets/image-20230603001113259.png" alt="image-20230603001113259" style="zoom: 50%;" />
 
@@ -796,26 +786,20 @@ PCA can also be used to compare the similarity of facial images, and detect if t
 ## Multi-Dimensional Scaling (MDS)
 
 - Another way to project feature vectors to a lower dimensional space
-- Uses ‘pair-wise’ distances to convert to 2D/3D while maintaining the original feature distances as much as possible
+- Uses feature vector distances to convert to 2D/3D while maintaining the original feature distances as much as possible
 - Allows for more accurate representation as inherently based on distances and similarities
 - Doesn’t use feature vectors
 - Typically slower than PCA
-- Required initial config through PCA?? (so what’s the point in MDS)
-- Iteratively changes config to better fit the data
-- ‘Stress’ function
-
-==TODO: tidy/redo this==
+- Requires an initial config through PCA, then iteratively changes it to fit the data even better
+- A **‘stress’** function is used to measure how well the data fits the new configuration
 
 ### Steps for MDS
 
-==TODO==
+1. Use PCA to get an initial configuration of the images in 2D/3D
+2. Calculate the 'stress' value of the initial configuration
+3. Iteratively move the images to reduce the stress value
+4. Stop when the stress value is low enough
 
-1. obtain distances (e.g. from feature vectors)
-2. decide new dimensionality (usually 2)
-3. generate initial configuration
-4. perform MDS
-5. plot image thumbnails at new calculated co-ords
-    ⇒ similar images get projected to similar locations
 
 ## Method 2: Clustering-Based Visualisation
 
@@ -898,29 +882,41 @@ Once images have been mapped or grouped using one of the above methods, it can b
   - When image database has been visualised with mapping or graph scheme
   - Viewing a single cluster/group of similar images
 
+
+
+==TODO: add image==
+
 ### Vertical Image Browsing
 
-- works with hierarchical visualisation
-- clusters of images visualised with representative image
-- selecting an image 'zooms' into that cluster
-- ‘vertical’ because ==…==
+- Works with hierarchical visualisation
+- Clusters of images visualised with a representative image
+- Selecting an image 'zooms' into that cluster
+- Called 'vertical' as based on hierarchical structure
+
+== TODO: add image ==
+
+*(Note: I couldn't find anything online about 'horizontal' or 'vertical' browsing, so I'm not sure these names are correct)*
 
 ### Graph-Based Browsing
 
-- uses panning and zooming to aid navigation/visualisation
-- can also select edges to navigate
+- Uses panning and zooming to aid navigation/visualisation
+- Can also select edges of the graph to navigate
+
+== TODO: add image ==
 
 ### Time-based browsing
 
-- use time stamp associated with image to arrange images, often clustering based as well
+- Uses the time stamp from the image's metadata to cluster images by date
 - e.g. the photos app on iOS: can zoom out to show years, zoom in to show months/days etc.
+
+== TODO: add image of iOS photos app ==
 
 ### Hue-Sphere Browsing
 
-- extract median colour of each image to get hue and lightness values
-- plot to globe using e.g. hue and lightness as coordinates
-- can tilt and pan sphere to view different sections, can zoom
-- can also do **‘hierarchical hue sphere’** where zooming in gives more precise hue/lightness values
+- Extract median colour of each image to get hue and lightness values
+- Plot to globe using e.g. hue and lightness as coordinates
+- Can tilt and pan sphere to view different sections, can zoom
+- Can also do **‘hierarchical hue sphere’** where zooming in gives more precise hue/lightness values
 - Can use with a VR headset for 'immersive' hue sphere browsing
 
 # Colour Constancy & Invariance
@@ -1119,9 +1115,8 @@ $$
 ### Comprehensive Normalisation
 
 - **Chromaticities** are invariant to image geometry $(R \to \dfrac{R}{R+G+B})$, and
-- **Greyworld normalisation** provides illumination invariance. So…
-
-- **Comprehensive normalisation** involves performing both chromaticity normalisation and greyworld normalisation together, to get a version of the image invariant to geometry **and** illumination!
+- **Greyworld normalisation** provides illumination invariance, so
+- **Comprehensive normalisation** involves performing both chromaticity normalisation and greyworld normalisation together, to get a version of the image invariant to geometry **and** illumination
 
 <img src="Computer Vision.assets/image-20230525134255536.png" alt="image-20230525134255536" style="zoom: 50%;" />
 
@@ -1186,7 +1181,7 @@ $$
 Texels vary depending on the texture it describes; the texels can vary by:
 
 - **Speed**: texels can vary **rapidly** (close patterns) or **slowly** (larger patterns)
-- **Direction**: texels can vary with a high or low degree of directionality (==…==)
+- **Directionality**: some textures (like wood grain) have a **preferred direction**, whereas others (like sand) do not
 - **Regularity**: texels can be **periodic** (i.e. *regular*, like a piece of cloth) or **stochastic** (i.e. *random*, like clouds)
 
 ## Statistical Approaches
@@ -1241,12 +1236,11 @@ Texels vary depending on the texture it describes; the texels can vary by:
 
 Various features of the co-occurrence matrix can be calculated:
 
-- The **maximum probability** of the matrix reveals the strongest responding part of the matrix
-- The **correlation** can be calculated to see how correlated pixels are with their chosen neighbours
-- The **energy** measures the uniformity of the matrix
-- The **contrast** of the matrix
-- The **homogeneity** measures how fair the elements are from the diagonal (==??==)
+- The **maximum probability** of the matrix shows the strongest responding part of the matrix
+- The **correlation** can be calculated to see how correlated pixels are with certain neighbours
+- The **contrast** or **uniformity** of the matrix shows how different or similar the values are to each other
 - The **entropy** reveals the randomness of the matrix values
+- The **homogeneity** of a matrix shows how close the overall values are to the diagonal values (top-left to bottom-right)
 
 ## Edge-Based Texture Descriptors
 
@@ -1287,7 +1281,7 @@ Starts with 3 simple $1\times 3$ filters:
 - Another simple but powerful texture descriptor
 - Describes the relationship of a pixel with its 8 direct neighbours
 - Encodes the result into a binary pattern
-- The resulting information can then be summarised into a histogram by ==…==
+- The resulting information can then be summarised into a histogram by counting the number of occurrences of each pattern
 
 ### Calculating LBPs
 
@@ -1383,17 +1377,22 @@ $$
 
 ### Uniform LBPs
 
-- Only record uniformity measures
-- ==TODO==
+- Certain LBPs appear a lot in images (e.g. over 90% of LBPs in a texture image are 00000000)
+- To reduce the storage space needed for LBPs, we can group similar LBPs together
+- **Uniform LBPs** are LBPs that have at most 2 transitions from 0 to 1 or vice versa
+- For these LBPs, we can store the number of transitions and the value of the first transition to get a more compact descriptor
+- Store the other **non-uniform LBPs** as they are
 
 ### Multi-Scale LBPs
 
 - Texture patterns might occur at varying scales
 - Can vary the radius of the circular LBPs to get texture descriptors for different scales
+- Can then concatenate the different descriptors together to get a multi-scale LBP descriptor
 
 ### Multi-Dimensional LBPs
 
-- ==TODO==
+- Can use LBPs on colour images as well
+- Do this by calculating LBPs for each colour channel and concatenating them together
 
 # Image Compression
 
@@ -1465,9 +1464,9 @@ $$
 
 - To make a Huffman table:
 
-  1. Sort the values by their frequency
-
-  1. ==…==
+  1. Count the number of occurrences of each value in the sequence
+  2. Sort the values in order of frequency
+  3. Assign the shortest binary code to the most common value, and the longest binary code to the least common value
 
 - However, we can usually use pre-made Huffman tables made to work with a range of images – this is how **JPEG compression** works
 
