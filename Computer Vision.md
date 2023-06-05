@@ -31,7 +31,7 @@ Computer vision has a wide range of applications, like:
 
 ## Mathematical Image Representation
 
-### Representing Images as Functions
+### Representing Images with Functions
 
 - An image can be represented as a function, $f(x, y)$
 - $(x, y)$ represents specific co-ordinates in the image
@@ -41,6 +41,13 @@ Computer vision has a wide range of applications, like:
   - RGB colour (3 values in range $0 - 255$)
   - black and white (either $0$ or $1$)
 - $x$, $y$ and $f$ are always **finite** and **discrete**, i.e. whole integers with a fixed range
+
+### Storing Images with Matrices
+
+- An image can also be stored as a matrix with $N$ rows and $M$ columns
+- Each entry of the matrix is one pixel of the image
+- So the storage space for an image in this format is $N\times M\times k$, where $k$ is the bit-depth
+- Images use a lot of storage space when stored this way, so they’re usually compressed (e.g. PNG or JPEG, see Lecture 9)
 
 ## Image Resolution
 
@@ -60,13 +67,6 @@ Computer vision has a wide range of applications, like:
 - Grayscale images typically have a bit-depth of 8 (for values $0 - 255$), and colour images have a bit depth of 24 (i.e. 8 bits for each RGB channel)
 
 <img src="https://www.reaconverter.com/features/samples/control-bit-depth.png" alt="How to change the color depth of an image using reaConverter" style="zoom: 67%;" />
-
-## Image Storage
-
-- An image can be stored as a matrix with $N$ rows and $M$ columns
-- Each entry of the matrix is one pixel of the image
-- So the storage space for an image in this format is $N\times M\times k$, where $k$ is the bit-depth
-- However, images are typically compressed to reduce the amount of storage required
 
 ## Image Resampling/Interpolation
 
@@ -90,7 +90,7 @@ Computer vision has a wide range of applications, like:
 
 ### Pixel Neighbourhoods
 
-- A pixel's 'neighbourhood' refers to the pixels around it
+- A pixel’s ‘neighbourhood’ refers to the pixels around it
 - Used for analysing regions, edges, etc.
 - There are different types of neighbourhoods:
   - **4-neighbours** ($N_4$): direct top/bottom/left/right
@@ -126,7 +126,7 @@ $$
 - **4-adjacency**: $p$ and $q$ are 4-adjacement if they are in $V$ and 4-neighbours with each other
 - **8-adjacency**: $p$ and $q$ are 8-adjacent if they are in $V$ and 8-neighbours with each other
 - **M-adjacency (mixed adjacency)**: $p$ and $q$ are m-adjacent if $q$ is 4-neighbours with $p$, **or** diagonal neighbours with $p$ with no shared 4-adjacent pixels
-- M-adjacency is sometimes used to eliminate ambiguities when deciding what counts as a 'neighbour', especially for pathfinding
+- M-adjacency is sometimes used to eliminate ambiguities when deciding what counts as a ‘neighbour’, especially for pathfinding
 
 <img src="Computer Vision.assets/image-20230525171845865.png" alt="image-20230525171845865" style="zoom:25%;" />
 
@@ -224,7 +224,7 @@ Some common challenges faced in computer vision are:
 
 ### Transform Domain Processing
 
-- On the other hand, the 'transform domain' refers to any alternative representation of the image, such as the frequency domain (covered in Lecture 9)
+- On the other hand, the ‘transform domain’ refers to any alternative representation of the image, such as the frequency domain (covered in Lecture 9)
 - **Transform domain processing** involves transforming the image into an entirely different representation for processing
 - The image can then be transformed back to the spatial domain if needed
 
@@ -289,8 +289,8 @@ $$
 - Useful for matching images from different sources
 - Steps:
   1. Calculate $CDF _1$ from source image and $CDF_2$ from target image
-  2. For each pixel's grey-level $G_1$ from source image, find the grey-level $G_2$ in target image where $CDF_1(G_1) = CDF(G_2)$
-  3. We now have a mapping for each grey-level of source image to target image – apply this mapping to the source image and we're done
+  2. For each pixel’s grey-level $G_1$ from source image, find the grey-level $G_2$ in target image where $CDF_1(G_1) = CDF(G_2)$
+  3. We now have a mapping for each grey-level of source image to target image – apply this mapping to the source image and we’re done
 
 ## Local Image Processing
 
@@ -301,7 +301,7 @@ $$
 
 1. Define a neighbourhood to use, like a $5\times 5$ square
 2. Apply a function (e.g. histogram equalisation) to the pixels in the given neighbourhood
-3. Repeat for each pixel in the image, moving the neighbourhood's centre from pixel to pixel
+3. Repeat for each pixel in the image, moving the neighbourhood’s centre from pixel to pixel
 
 ### Averaging Filters
 
@@ -310,7 +310,7 @@ $$
 - Larger kernel size $\to$ more blurred
 - Can also use a **weighted average filter**: assign different weights to each pixel, typically prioritising the centre
 - **Gaussian blur** is an example of a weighted average filter
-- **Median filters** replace the pixel's value with the median of values in the kernel, which is better for noise reduction
+- **Median filters** replace the pixel’s value with the median of values in the kernel, which is better for noise reduction
 
 ### Convolutions & Spatial Filters
 
@@ -327,28 +327,24 @@ $$
 
 ## Image Derivatives
 
-- We can take the derivative of an image along one dimension, e.g. the y axis:
+- We can take the derivative of an image
+- For simplicity we’ll do it along just the y axis, although it could be done in 2D
+- The **1st derivative**, $f’(x)$ of the image shows the overall changes in intensity, and any gradual brightness transitions
+  - Common filters using the 1st derivative are the **gradient** and **Sobel** filters
 
 <img src="Computer Vision.assets/image-20230526141025628.png" alt="image-20230526141025628" />
 
-- The **1st derivative**, $f’(x)$ of the image shows the changes in intensity, and any gradual brightness transitions
-  - Common filters using the 1st derivative are the **gradient** and **Sobel** filters
-- The **2nd derivative**, $f''(x)$ shows any sharp transitions – $f''(x)$ will cross the x-axis at each edge
-  - A common filter using the 2nd derivative is the **Laplacian** filter for edge detection and sharpening
+- The **2nd derivative**, $f''(x)$ shows any sharp transitions in the image
+  - $f''(x)$ will cross the x-axis at each edge
+  - A common filter using the 2nd derivative is the **Laplacian** filter for edge detection and image sharpening
+  
 
 <img src="https://mipav.cit.nih.gov/pubwiki/images/a/a2/LaplacianGrid5.jpg" alt="LaplacianGrid5.jpg" />
 
-All of which can be used to highlight the edges in an image
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Valve_sobel_%283%29.PNG/300px-Valve_sobel_%283%29.PNG" alt="Sobel operator - Wikipedia"/>
-
-<img src="Computer Vision.assets/image-20230526143053931.png" alt="image-20230526143053931"  />
-
 ## Unsharp Masking
 
-- **Unsharp masking** is another way to sharpen images
-- Steps:
-    1. Blur original image, e.g. with Gaussian filter, to get $B$
+- **Unsharp masking** is another way to sharpen images:
+    1. Blur the original image (e.g. with Gaussian blur) to get $B$
     2. Subtract the blurred image from original to get mask: $M=O-B$
     3. Add mask to original to get sharpened image: $S=O+M$
 
@@ -356,7 +352,7 @@ All of which can be used to highlight the edges in an image
 
 ## What is Morphology?
 
-- The term 'morphology' comes from biology: the *form* and *structure* of living things
+- The term ‘morphology’ comes from biology: the *form* and *structure* of living things
 - In computer vision, it refers to the form and structure of the *images*, i.e. image regions and their characteristics with each other
 - Morphological image processing involves manipulating the structure of an image, e.g. to remove noise or highlight certain features
 
@@ -495,12 +491,16 @@ $$
 
 # Content-Based Image Retrieval
 
-## Text-Based Image Retrieval
+## What is Content-Based Image Retrieval?
+
+- **Content-based image retrieval (CBIR)** involves searching for images based on the contents of the images themselves (rather than the filenames, time stamp etc.)
+- This can be particularly useful for searching through large albums or image databases
+- There are a few different ways to perform CBIR
+
+## Keyword-Based Image Retrieval
 
 - Manually annotate images with keywords
 - This lets us search through images by text with conventional database/query interfaces
-
-### Issues with Text-Based Image Retrieval
 
 - Descriptions of same image can vary a lot
 - Cannot always describe image with words
@@ -545,7 +545,7 @@ $$
 
 ### Colour Moments
 
-- **Colour moment** provide ‘compact’ descriptions of an image's colours
+- **Colour moment** provide ‘compact’ descriptions of an image’s colours
 - The **1st order moment** is the mean colour value of the image, $\mu$
 - The **2nd order moment** is the variance of colour values, $\sigma^2$
 - These can be analysed and compared to find similar images
@@ -595,7 +595,7 @@ $$
 
 ### Feature Vectors -- Combining Image Features
 
-- Using just one feature of the image for indexing can be unreliable and won't always return the best results
+- Using just one feature of the image for indexing can be unreliable and won’t always return the best results
 - We can instead make a **feature vector** using a combination of index scores from different features
 - The features can be assigned different weights to prioritise certain features over others
 - These feature vectors often have 10s or 100s of dimensions
@@ -623,7 +623,7 @@ $$
 
 ## The Semantic Gap
 
-- Computer vision algorithms don’t always 'see' what's in the image the same way humans do
+- Computer vision algorithms don’t always ‘see’ what’s in the image the same way humans do
 - Our high-level understanding of images (feeling, aesthetic, etc.) cannot be modelled with low-level analysis tools like colour histograms
 - This is known as the **semantic gap** and is a major problem in image retrieval
 
@@ -638,7 +638,7 @@ One way to mitigate this gap is with **relevance feedback**:
 
 ## Region-Based Image Classification
 
-- It’s sometimes useful to classify images by their general contents – e.g. 'outdoors', '3D render', 'sports', etc.
+- It’s sometimes useful to classify images by their general contents – e.g. ‘outdoors’, ‘3D render’, ‘sports’, etc.
 - This requires a **region-based** approach, so we can associate each region of the image with a label
 - One way to do this is with **statistical modelling** -- i.e. get a probability model for each region of the image
 
@@ -659,7 +659,7 @@ One way to mitigate this gap is with **relevance feedback**:
 ### Searching R-Trees
 
 - Think of the database like a library, and the library is the R-tree
-- If you know the type of book you're looking for, you would go to the appropriate section to save time
+- If you know the type of book you’re looking for, you would go to the appropriate section to save time
 - In the context of finding similar images, an R-tree organises images based on their features
 - If you give it an image, it examines the features of the image, such as colour, texture, shape, etc.
 - It then goes to the part of the R-tree where similar features are stored, kind of like going to the appropriate section in the library
@@ -713,9 +713,12 @@ Database image browsers have 2 main tasks:
 
 - Plotting images near each other can lead to images overlapping and hiding each other
 - Can solve this by spacing the images out and moving them to fill empty spaces on the grid
-- Fill any empty cells on the grid
-- Move items across from neighbouring cells
-- =='place - bump - double bump'==
+- We can use the ‘place - bump - double bump’ method to do this:
+  1. **Place**: Place the image in the cell
+  2. **Bump**: If the image overlaps with another, move it to the nearest empty cell
+  3. **Double Bump**: If the image overlaps with another after bumping, move it to the next nearest empty cell
+- The result is a grid of images with no overlaps
+  
 
 ![image-20230603141946077](./Computer Vision.assets/image-20230603141946077.png)
 
@@ -778,7 +781,7 @@ As mentioned, PCA can be used for mapping-based image visualisation:
 PCA can also be used to compare the similarity of facial images, and detect if two faces are the same:
 
 1. Get big feature vectors from faces
-1. pick top $k$ PCs = 'eigenfaces'
+1. pick top $k$ PCs (the ‘eigenfaces’)
 1. faces get represented by co-ordinates/weights in new space
 1. face recognition by finding closest face in new space (e.g. euclidean distance)
 
@@ -795,7 +798,7 @@ PCA can also be used to compare the similarity of facial images, and detect if t
 ### Steps for MDS
 
 1. Use PCA to get an initial configuration of the images in 2D/3D
-2. Calculate the 'stress' value of the initial configuration
+2. Calculate the ‘stress’ value of the initial configuration
 3. Iteratively move the images to reduce the stress value
 4. Stop when the stress value is low enough
 
@@ -889,13 +892,14 @@ Once images have been mapped or grouped using one of the above methods, it can b
 - aka **hierarchical browsing**
 - Works with hierarchical and folder-based database structures
 - Clusters of images visualised with a representative image
-- Selecting an image 'zooms' into that cluster
+- Selecting an image ‘zooms’ into that cluster
 
 ![image-20230605141555963](./Computer Vision.assets/image-20230605141555963.png)
 
-<center><i style="font-size: 1.05rem; text-shadow: 0 0 25px #333">Note: I couldn't find anything online about ‘horizontal'<br>
-or ‘vertical' image browsing, so I'm not sure those names<br>
+<center><i style="font-size: 1.05rem; text-shadow: 0 0 25px #333">Note: I couldn't find anything online about 'horizontal'<br>
+or 'vertical' image browsing, so I'm not sure those names<br>
   are correct<br>
+
 
 ### Graph-Based Browsing
 
@@ -906,7 +910,7 @@ or ‘vertical' image browsing, so I'm not sure those names<br>
 
 ### Time-based browsing
 
-- Uses the time stamp from the image's metadata to cluster images by date
+- Uses the time stamp from the image’s metadata to cluster images by date
 - e.g. the photos app on iOS: can zoom out to show years, zoom in to show months/days etc.
 
 <img src="./Computer Vision.assets/image-20230605143335043.png" alt="image-20230605143335043" style="zoom: 40%;" />
@@ -920,7 +924,7 @@ or ‘vertical' image browsing, so I'm not sure those names<br>
 
 ### Newer Technologies for Image Browsing
 
-- You can use hue-sphere browsing and similar techniques with a **VR headset**, for 'immersive' hue sphere browsing
+- You can use hue-sphere browsing and similar techniques with a **VR headset**, for ‘immersive’ hue sphere browsing
 - Interacting with large databases in 3D may be easier than in 
 
 # Colour Constancy & Invariance
@@ -1131,7 +1135,7 @@ $$
 - So we apply gamma to our displays to make images look more normal
 - Visible contrast ratio is ~10000:1 (e.g. bright sun vs pitch black)
 - Displays have contrast ratios of ~100:1
-- So contrast ratio is 'compressed' – gamma is a way to 'uncompress' it
+- So contrast ratio is ‘compressed’ – gamma is a way to ‘uncompress’ it
 
 <img src="Computer Vision.assets/image-20230525134521782.png" alt="image-20230525134521782" style="zoom:67%;" />
 
@@ -1175,14 +1179,14 @@ $$
 
 - Can even be used to generate new images from saved textures
 
-## What are Texels?
+## Texels
 
 - A texture is a pattern of **repeated elements** – some repetition in the intensity and relative positions of the pixels
 - The repeated elements are known as **‘texels’** (or **texture primitives**)
 
-### How Texels Vary
+### Texel Variations
 
-Texels vary depending on the texture it describes; the texels can vary by:
+Depending on the textures they describe, texels can vary by their:
 
 - **Speed**: texels can vary **rapidly** (close patterns) or **slowly** (larger patterns)
 - **Directionality**: some textures (like wood grain) have a **preferred direction**, whereas others (like sand) do not
@@ -1209,11 +1213,11 @@ Texels vary depending on the texture it describes; the texels can vary by:
 
 - An image’s **entropy** ($e$) represents the randomness of the image, where higher values are more random
 
-<img src="./Computer Vision.assets/image-20230603193421298.png" alt="image-20230603193421298" style="zoom:50%;" />
+<img src="./Computer Vision.assets/image-20230603193421298.png" alt="image-20230603193421298" style="zoom: 33%;" />
 
 - An image’s **smoothness** ($R$) can be calculated using the 2nd order moment; $R(z)=0$ would imply a constant intensity (completely smooth)
 
-<img src="./Computer Vision.assets/image-20230603193439377.png" alt="image-20230603193439377" style="zoom:50%;" />
+<img src="./Computer Vision.assets/image-20230603193439377.png" alt="image-20230603193439377" style="zoom: 33%;" />
 
 ### Comparing Statistical Descriptors
 
@@ -1226,7 +1230,7 @@ Texels vary depending on the texture it describes; the texels can vary by:
 - Segmentation using statistical descriptors doesn’t work too well
 - Histograms don’t provide any detail on pixels in relation to each other, which is sometimes important for texture analysis
 
-## Co-Occurrence Matrices
+## Co-occurrence Matrices
 
 - More difficult to calculate than statistical descriptors, but performs better
 - Considers not just the distribution of intensities, but the **relative positions** of pixels
@@ -1236,7 +1240,7 @@ Texels vary depending on the texture it describes; the texels can vary by:
   - its ‘related’ pixel (e.g. directly to the right) had intensity $j$
 
 
-### Co-Occurrence Matrix Features
+### Co-occurrence Matrix Features
 
 Various features of the co-occurrence matrix can be calculated:
 
@@ -1268,15 +1272,15 @@ Starts with 3 simple $1\times 3$ filters:
 
 - Can apply filters to themselves like convolutions to get more complex $1 \times 5$ filters:
 
-<img src="./Computer Vision.assets/image-20230604001540512.png" alt="image-20230604001540512" style="zoom: 33%;" />
+<img src="./Computer Vision.assets/image-20230604001540512.png" alt="image-20230604001540512" style="zoom: 25%;" />
 
 - And by transposing one of the filters, we can combine them to get 2D texture masks:
 
-<img src="./Computer Vision.assets/image-20230604001629267.png" alt="image-20230604001629267" style="zoom: 43%;" />
+<img src="./Computer Vision.assets/image-20230604001629267.png" alt="image-20230604001629267" style="zoom: 33%;" />
 
 - These texture masks can then be applied to images to create texture descriptors for them
 
-![image-20230604001720115](./Computer Vision.assets/image-20230604001720115.png)
+<img src="./Computer Vision.assets/image-20230604001720115.png" alt="image-20230604001720115" style="zoom: 33%;" />
 
 - These are typically used along with the image’s **energy** values from earlier to provide a more comprehensive description of the image’s texture
 
