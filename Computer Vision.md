@@ -128,7 +128,7 @@ $$
 - **M-adjacency (mixed adjacency)**: $p$ and $q$ are m-adjacent if $q$ is 4-neighbours with $p$, **or** diagonal neighbours with $p$ with no shared 4-adjacent pixels
 - M-adjacency is sometimes used to eliminate ambiguities when deciding what counts as a 'neighbour', especially for pathfinding
 
-<img src="Computer Vision.assets/image-20230525171845865.png" alt="image-20230525171845865" width=500/>
+<img src="Computer Vision.assets/image-20230525171845865.png" alt="image-20230525171845865" style="zoom:25%;" />
 
 ### Image regions
 
@@ -179,12 +179,11 @@ $$
 - The **array product** (written as **.***) comes from multiplying each value from array 1 by the corresponding value in array 2
 - Array addition, subtraction and division work in the same way
 
-<img src="Computer Vision.assets/image-20230525172508369.png" alt="image-20230525172508369" width=300/>
+<img src="Computer Vision.assets/image-20230525172508369.png" alt="image-20230525172508369" width=300 style="zoom: 75%;" />
 
 ### Noise reduction
 
-- We can reduce noise by taking the average of multiple images of the same scene
-
+We can reduce noise by taking the average of multiple images of the same scene:
 $$
 \displaystyle \bar g (x,y) = \frac{1}{K} \sum ^{K} _{i=1} g_i (x,y)\tag*{}
 $$
@@ -873,8 +872,9 @@ To make the tree for hierarchical image browsing, we do the following:
 
 Once images have been mapped or grouped using one of the above methods, it can be visualised with one of the following methods:
 
-### Horizontal Image Browsing
+### Horizontal Browsing
 
+- aka **gallery browsing**
 - A single screen of visualised images
 - Images are in a 2D plane with panning and zooming functionality
 - Hovering over image magnifies the image
@@ -882,34 +882,34 @@ Once images have been mapped or grouped using one of the above methods, it can b
   - When image database has been visualised with mapping or graph scheme
   - Viewing a single cluster/group of similar images
 
+<img src="./Computer Vision.assets/image-20230605141327872.png" alt="image-20230605141327872" style="zoom: 67%;" />
 
+### Vertical Browsing
 
-==TODO: add image==
-
-### Vertical Image Browsing
-
-- Works with hierarchical visualisation
+- aka **hierarchical browsing**
+- Works with hierarchical and folder-based database structures
 - Clusters of images visualised with a representative image
 - Selecting an image 'zooms' into that cluster
-- Called 'vertical' as based on hierarchical structure
 
-== TODO: add image ==
+![image-20230605141555963](./Computer Vision.assets/image-20230605141555963.png)
 
-*(Note: I couldn't find anything online about 'horizontal' or 'vertical' browsing, so I'm not sure these names are correct)*
+<center><i style="font-size: 1.05rem; text-shadow: 0 0 25px #333">Note: I couldn't find anything online about ‘horizontal'<br>
+or ‘vertical' image browsing, so I'm not sure those names<br>
+  are correct<br>
 
 ### Graph-Based Browsing
 
 - Uses panning and zooming to aid navigation/visualisation
 - Can also select edges of the graph to navigate
 
-== TODO: add image ==
+<img src="./Computer Vision.assets/image-20230605142544733.png" alt="image-20230605142544733" style="zoom: 50%;" />
 
 ### Time-based browsing
 
 - Uses the time stamp from the image's metadata to cluster images by date
 - e.g. the photos app on iOS: can zoom out to show years, zoom in to show months/days etc.
 
-== TODO: add image of iOS photos app ==
+<img src="./Computer Vision.assets/image-20230605143335043.png" alt="image-20230605143335043" style="zoom: 40%;" />
 
 ### Hue-Sphere Browsing
 
@@ -917,7 +917,11 @@ Once images have been mapped or grouped using one of the above methods, it can b
 - Plot to globe using e.g. hue and lightness as coordinates
 - Can tilt and pan sphere to view different sections, can zoom
 - Can also do **‘hierarchical hue sphere’** where zooming in gives more precise hue/lightness values
-- Can use with a VR headset for 'immersive' hue sphere browsing
+
+### Newer Technologies for Image Browsing
+
+- You can use hue-sphere browsing and similar techniques with a **VR headset**, for 'immersive' hue sphere browsing
+- Interacting with large databases in 3D may be easier than in 
 
 # Colour Constancy & Invariance
 
