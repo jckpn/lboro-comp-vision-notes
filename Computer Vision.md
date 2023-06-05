@@ -56,7 +56,7 @@ Computer vision has a wide range of applications, like:
 ### Bit-Depth: Intensity Resolution
 
 - The smallest discernible change in intensity value
-- Each pixel has a number of bits associated with it called the **bit-depth, measured in bpp** (bits per pixel)
+- Each pixel has a number of bits associated with it called the **bit-depth**, measured in **bpp (bits per pixel)**
 - Grayscale images typically have a bit-depth of 8 (for values $0 - 255$), and colour images have a bit depth of 24 (i.e. 8 bits for each RGB channel)
 
 <img src="https://www.reaconverter.com/features/samples/control-bit-depth.png" alt="How to change the color depth of an image using reaConverter" style="zoom: 67%;" />
