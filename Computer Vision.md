@@ -86,9 +86,7 @@ Computer vision has a wide range of applications, like:
 
 <img src="Computer Vision.assets/image-20230525161651453.png" alt="image-20230525161651453" style="zoom:37%;" />
 
-## Pixel relationships
-
-### Pixel Neighbourhoods
+## Pixel Neighbourhoods
 
 - A pixel’s ‘neighbourhood’ refers to the pixels around it
 - Used for analysing regions, edges, etc.
@@ -113,7 +111,7 @@ $$
 
 <img src="Computer Vision.assets/image-20230525171452559.png" alt="image-20230525171452559" width=600 />
 
-### Paths and Connectivity
+## Pixel Paths and Connectivity
 
 - $p$ and $q$ are **connected** if and only if a path exists connecting them
 - If $p = q$ it is a **closed path**
@@ -141,7 +139,7 @@ $$
 - The **boundary** of a region $R$ is the set of pixels in $R$ with one or more neighbours **not** in $R$
 - i.e. the outline of the region
 
-### Distances
+## Pixel Distances
 
 - There are a few different ways to measure the distance between two pixels in an image
 - Can define a distance function $D$ with the following rules:
@@ -150,7 +148,7 @@ $$
   3. $D(p, q) = D(q, p)$
   4. $D(p,z) \leq D(p,q) + D(q,z)$ for any pixels $p, q, z$ 
 
-### Example Distance Functi
+### Example Distance Functions
 
 - **Euclidean distance** ($D_e$) uses Pythagorean theorem:
 
@@ -273,7 +271,8 @@ The histogram can be analysed for basic information about the image:
 ### Histogram Equalisation
 
 - Contrast stretching does not always give ideal results, as the histogram can still be skewed
-- Histogram equalisation is a more advanced technique that redistributes the intensity values to get a more ‘flat’ looking histogram
+- **Histogram equalisation** is a more advanced technique that redistributes the intensity values to get a more ‘flat’ looking histogram
+- We need to use the **cumulative histogram function**, $CDF$ to do this
 
 $$
 \begin{matrix}
@@ -348,7 +347,7 @@ $$
     2. Subtract the blurred image from original to get mask: $M=O-B$
     3. Add mask to original to get sharpened image: $S=O+M$
 
-# Morphological image processing
+# Morphological Image Processing
 
 ## What is Morphology?
 
@@ -931,8 +930,8 @@ or 'vertical' image browsing, so I'm not sure those names<br>
 
 ## What is Colour Constancy?
 
-- The concept of perceiving the ‘actual’ colours of an object despite suboptimal lighting conditions; human eyes do this very well as they can easily adapt
-- In computer vision this involves estimating the image’s original lighting conditions, then shifting the colours to look like it had normal lighting
+- The concept of perceiving the ‘actual’ colours of an object despite suboptimal lighting conditions; human eyes do this very well
+- In computer vision, this involves estimating the image’s original lighting conditions, then shifting the colours to look like it had normal lighting
 - Used for basic colour correction, e.g. changing white balance and/or brightness
 - Typical example would be a photo taken with yellow lighting, and shifting it to look like it was taken under white lighting
 - Makes images mostly invariant to brightness, illumination colour, and differing camera sensors
@@ -998,17 +997,18 @@ $$
 \begin{matrix}
 \begin{bmatrix}
 R_{corr}\\
+G_{corr}\\
 B_{corr}\\
-C_{corr}\\
 \end{bmatrix}
 =
 \begin{bmatrix}
-\frac{W_R}{E_R}\cdot R\\
-\frac{W_G}{E_G}\cdot G\\
-\frac{W_B}{E_B}\cdot B\\
-\end{bmatrix}\\\\
-\small
-\text{Where } W \text{ is the illumination of pure white light}
+\frac{E_{white}}{E_R}\cdot R\\
+\frac{E_{white}}{E_G}\cdot G\\
+\frac{E_{white}}{E_B}\cdot B\\
+\end{bmatrix}
+\\\\
+\text{Where $E_{white}$ is the RGB value of the white point}\\
+\text{we want to adjust to}
 \end{matrix}
 $$
 
